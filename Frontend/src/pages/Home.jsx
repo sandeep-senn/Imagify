@@ -2,7 +2,6 @@ import Header from "../components/Header";
 import HowItWorks from "../components/HowItWorks";
 import Desc from "../components/Desc";
 import Testimonial from "../components/Testimonial";
-import Footer from "../components/Footer";
 import GenerateBtn from "../components/GenerateBtn";
 
 const Home = () => {

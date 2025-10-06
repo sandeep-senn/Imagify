@@ -6,20 +6,21 @@ const Result = () => {
   const [image, setImage] = React.useState(assets.sample_img_1);
   const [isImageLoaded, setIsImageLoaded] = React.useState(false);
   const [loading, setLoading] = React.useState(false);
-  const [input, setInput] = React.useState('');
+  const [input, setInput] = React.useState("");
 
-  const {generateImage} = React.useContext(AppContext)
+  const { generateImage } = React.useContext(AppContext);
   const handleSubmit = async (e) => {
     e.preventDefault();
     setLoading(true);
 
-    if(input){
-      const image = await generateImage(input)
-      if(image){
-        setIsImageLoaded(true)
-        setImage(image)
-      }else{
-          setLoading(false)
+    if (input) {
+      const image = await generateImage(input);
+      setLoading(false);
+      if (image) {
+        setIsImageLoaded(true);
+        setImage(image);
+      } else {
+        setLoading(false);
       }
     }
   };
@@ -31,8 +32,16 @@ const Result = () => {
     >
       <div>
         <div className="relative">
-          <img src={image} className="max-w-sm rounded" alt="Generated" />
-          <span className={`absolute bottom-0 left-0 h-1 bg-blue-500 ${loading ? 'w-full transition-all duration-[10s]' : 'w-0'}`}></span>
+          <img
+            src={image}
+            className="max-w-sm rounded"
+            alt={input || "Generated Image"}
+          />
+          <span
+            className={`absolute bottom-0 left-0 h-1 bg-blue-500 ${
+              loading ? "w-full transition-all duration-[10s]" : "w-0"
+            }`}
+          ></span>
         </div>
         {loading && <p className="mt-2 text-blue-600">Loading...</p>}
       </div>
@@ -41,12 +50,17 @@ const Result = () => {
         <div className="flex w-full max-w-xl bg-neutral-500 text-white text-sm p-0.5 mt-10 rounded-full">
           <input
             type="text"
+            value={input}
+            onChange={(e) => setInput(e.target.value)}
             placeholder="Describe what you want to generate"
             className="flex-1 bg-transparent outline-none ml-8 placeholder-gray-300"
-          /> 
+          />
           <button
             type="submit"
-            className="bg-zinc-900 px-10 sm:px-16 py-3 rounded-full"
+            disabled={loading}
+            className={`bg-zinc-900 px-10 sm:px-16 py-3 rounded-full ${
+              loading ? "opacity-50 cursor-not-allowed" : ""
+            }`}
           >
             Generate
           </button>

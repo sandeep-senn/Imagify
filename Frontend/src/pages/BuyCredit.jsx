@@ -1,76 +1,11 @@
 import { useContext } from "react";
 import { assets, plans } from "../assets/assets";
 import { AppContext } from "../context/AppContext";
-import axios from "axios";
 
 const BuyCredit = () => {
-  const { user, backendUrl, loadCreditsData, token, setShowLogin } =
+  const { user } =
     useContext(AppContext);
 
-  const initPay = async (order) => {
-    const options = {
-      key: import.meta.env.VITE_RAZORPAY_KEY_ID,
-      amount: order.amount,
-      currency: order.currency,
-      name: "Credits Payment",
-      description: "Credits Payment",
-      order_id: order.id,
-      receipt: order.receipt,
-      handler: async (response) => {
-        try {
-          const { data } = await axios.post(
-            `${backendUrl}api/auth/verify-razor`,
-            response,
-            {
-              headers: { token },
-            }
-          );
-          if (data.success) {
-            await loadCreditsData();
-            alert("Payment Successful!");
-          } else {
-            alert("Payment verification failed!");
-          }
-        } catch (error) {
-          console.error(error);
-        }
-      },
-      theme: {
-        color: "#3399cc",
-      },
-    };
-    const rzp = new window.Razorpay(options);
-    try {
-      rzp.open();
-    } catch (err) {
-      alert("Unable to open payment gateway.");
-      console.error(err);
-    }
-  };
-  
-  const paymentRazorpay = async (planId) => {
-    try {
-      if (!user) {
-        setShowLogin(true);
-        return;
-      }
-
-      const { data } = await axios.post(
-        `${backendUrl}api/auth/pay-razor`,
-        { planId },
-        { headers: { token } }
-      );
-
-      if (data.success && data.order) {
-        initPay(data.order);
-      } else {
-        console.error("Payment failed:", data.message);
-      }
-    } catch (error) {
-      console.error("Error in paymentRazorpay:", error);
-    }
-  };
-  
   return (
     <div className="min-h-screen bg-gray-50 px-4 py-10">
       <div className="text-center mb-12">
@@ -101,9 +36,6 @@ const BuyCredit = () => {
               {plan.credits} credits
             </p>
             <button
-              onClick={() => {
-                paymentRazorpay(plan.id);
-              }}
               className="mt-6 bg-black text-white px-6 py-2 rounded-full hover:bg-blue-600 transition"
             >
               {user ? "Purchase" : "Get Started"}

@@ -3,6 +3,7 @@ import { assets } from "../assets/assets";
 import { AppContext } from "../context/AppContext";
 import axios from "axios";
 import { toast } from "react-toastify";
+import { useNavigate } from "react-router-dom";
 
 const Login = () => {
   const [isLogin, setIsLogin] = useState(true);
@@ -11,13 +12,13 @@ const Login = () => {
   const [name, setName] = useState("");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
-
+  const navigate = useNavigate();
   const onSubmitHandler = async (e) => {
     e.preventDefault();
 
     try {
-      if (isLogin === "Login") {
-        const { data } = await axios.post(`${backendUrl}api/auth/login`, {
+      if (isLogin) {
+        const { data } = await axios.post(backendUrl + "api/auth/login", {
           email,
           password,
         });
@@ -27,11 +28,12 @@ const Login = () => {
           setUser(data.user);
           localStorage.setItem("token", data.token);
           setShowLogin(false);
+          navigate('/');
         } else {
           toast.error(data.message);
         }
       } else {
-        const { data } = await axios.post(`${backendUrl}api/auth/register`, {
+        const { data } = await axios.post(backendUrl + "api/auth/register", {
           name,
           email,
           password,
@@ -41,6 +43,7 @@ const Login = () => {
           setUser(data.user);
           localStorage.setItem("token", data.token);
           setShowLogin(false);
+          navigate('/');
         } else {
           toast.error(data.message);
         }
@@ -60,6 +63,7 @@ const Login = () => {
   return (
     <div className="absolute top-0 left-0 right-0 bottom-0 z-10 backdrop-blur-sm bg-black/30 flex justify-center items-center">
       <form
+      onClick={()=>console.log("clicked")}
         onSubmit={onSubmitHandler}
         className="relative bg-white p-10 rounded-xl w-[90%] max-w-md"
       >
@@ -131,7 +135,7 @@ const Login = () => {
           </p>
         )}
 
-        <button className="bg-blue-600 w-full text-white py-2 rounded-full hover:bg-black transition">
+        <button className="bg-blue-600 w-full text-white py-2 rounded-full cursor-pointer hover:bg-black transition">
           {isLogin ? "Login" : "Create Account"}
         </button>
         <p className="mt-5 text-center text-sm">

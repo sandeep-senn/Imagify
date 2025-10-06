@@ -1,0 +1,25 @@
+@import "tailwindcss";
+
+@import url('https://fonts.googleapis.com/css2?family=Outfit:wght@100..900&display=swap');
+
+*{
+    font-family: Outfit, sans-serif;
+}
+
+.placeholder-color{
+    color : #e0e0e0;
+    font-weight : 300;
+}
+.plan-card:hover {
+  box-shadow: 0 0 20px rgba(201,164,109,0.4);
+  transform: translateY(-4px) scale(1.02);
+}
+.bg-premium {
+  background: radial-gradient(circle at 20% 20%, #1e293b 0%, #0f172a 100%);
+}
+.card-premium {
+  backdrop-filter: blur(12px);
+  background: rgba(255,255,255,0.08);
+  border: 1px solid rgba(255,255,255,0.15);
+}
+text-gold { color: #c9a46d }

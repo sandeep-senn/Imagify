@@ -4,10 +4,11 @@ import { AppContext } from "../context/AppContext";
 import axios from "axios";
 import { toast } from "react-toastify";
 import { useNavigate } from "react-router-dom";
+import Loader from "./Loader";
 
 const Login = () => {
   const [isLogin, setIsLogin] = useState(true);
-  const { setShowLogin, backendUrl, setToken, setUser } =
+  const { setShowLogin, backendUrl, setToken, setUser, authLoading, setAuthLoading } =
     useContext(AppContext);
   const [name, setName] = useState("");
   const [email, setEmail] = useState("");
@@ -15,7 +16,9 @@ const Login = () => {
   const navigate = useNavigate();
   const onSubmitHandler = async (e) => {
     e.preventDefault();
+    if (authLoading) return;
 
+    setAuthLoading(true);
     try {
       if (isLogin) {
         const { data } = await axios.post(backendUrl + "api/auth/login", {
@@ -49,7 +52,9 @@ const Login = () => {
         }
       }
     } catch (error) {
-      toast.error(error.message);
+      toast.error(error.response?.data?.message || error.message);
+    } finally {
+      setAuthLoading(false);
     }
   };
   useEffect(() => {
@@ -63,15 +68,14 @@ const Login = () => {
   return (
     <div className="absolute top-0 left-0 right-0 bottom-0 z-10 backdrop-blur-sm bg-black/30 flex justify-center items-center">
       <form
-      onClick={()=>console.log("clicked")}
         onSubmit={onSubmitHandler}
-        className="relative bg-white p-10 rounded-xl w-[90%] max-w-md"
+        className="relative bg-white p-10 rounded-2xl w-[90%] max-w-md shadow-[0_20px_80px_rgba(15,23,42,0.18)]"
       >
         <img
           src={assets.cross_icon}
           alt="Close"
-          className="absolute top-5 right-5 cursor-pointer"
-          onClick={() => setShowLogin(false)}
+          className={`absolute top-5 right-5 ${authLoading ? "cursor-not-allowed opacity-40" : "cursor-pointer"}`}
+          onClick={() => !authLoading && setShowLogin(false)}
         />
 
         <h1 className="text-center text-2xl text-neutral-700 font-semibold mb-2">
@@ -94,6 +98,7 @@ const Login = () => {
                 setName(e.target.value);
               }}
               value={name}
+              disabled={authLoading}
               className="outline-none text-sm w-full"
               type="text"
               placeholder="Full Name"
@@ -108,6 +113,7 @@ const Login = () => {
               setEmail(e.target.value);
             }}
             value={email}
+            disabled={authLoading}
             className="outline-none text-sm w-full"
             type="email"
             placeholder="Email Id"
@@ -122,6 +128,7 @@ const Login = () => {
               setPassword(e.target.value);
             }}
             value={password}
+            disabled={authLoading}
             className="outline-none text-sm w-full"
             type="password"
             placeholder="Password"
@@ -135,14 +142,39 @@ const Login = () => {
           </p>
         )}
 
-        <button className="bg-blue-600 w-full text-white py-2 rounded-full cursor-pointer hover:bg-black transition">
-          {isLogin ? "Login" : "Create Account"}
+        <button
+          disabled={authLoading}
+          className={`w-full text-white py-3 rounded-full transition flex items-center justify-center gap-3 ${
+            authLoading
+              ? "bg-blue-400 cursor-not-allowed"
+              : "bg-blue-600 cursor-pointer hover:bg-black"
+          }`}
+        >
+          {authLoading ? (
+            <>
+              <Loader
+                label={isLogin ? "Signing you in" : "Creating your account"}
+                size="sm"
+                tone="light"
+                inline
+              />
+            </>
+          ) : (
+            <span>{isLogin ? "Login" : "Create Account"}</span>
+          )}
         </button>
+        <p className="mt-3 text-center text-xs text-gray-500 min-h-4">
+          {authLoading
+            ? isLogin
+              ? "Checking your account and preparing your session..."
+              : "Creating your profile and getting everything ready..."
+            : ""}
+        </p>
         <p className="mt-5 text-center text-sm">
           {isLogin ? "Don't have an account?" : "Already have an account?"}{" "}
           <span
-            className="text-blue-600 cursor-pointer font-medium"
-            onClick={() => setIsLogin(!isLogin)}
+            className={`text-blue-600 font-medium ${authLoading ? "cursor-not-allowed opacity-50" : "cursor-pointer"}`}
+            onClick={() => !authLoading && setIsLogin(!isLogin)}
           >
             {isLogin ? "Sign Up" : "Login"}
           </span>

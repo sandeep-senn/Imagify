@@ -4,14 +4,14 @@ import { assets } from '../assets/assets'
 import { AppContext } from '../context/AppContext'
 
 const GenerateBtn = () => {
-  const { user } = useContext(AppContext)
+  const { user, setShowLogin } = useContext(AppContext)
   const navigate = useNavigate()
 
   const handleGenerate = () => {
     if (user) {
       navigate('/result')   // go to result page
     } else {
-      navigate('/login')    // go to login page
+      setShowLogin(true)
     }
   }
 
@@ -21,13 +21,8 @@ const GenerateBtn = () => {
         See the Magic, Try it Now!
       </h1>
 
-      <div
-        className="bg-black text-white rounded-full px-6 py-3 mt-4 flex items-center gap-3 w-fit mx-auto cursor-pointer hover:scale-[1.02] transition-all duration-300"
-      >
-        <button
-          className="rounded-lg shadow-lg"
-          onClick={handleGenerate}
-        >
+      <div className="bg-black text-white rounded-full px-6 py-3 mt-4 flex items-center gap-3 w-fit mx-auto hover:scale-[1.02] transition-all duration-300 shadow-[0_14px_30px_rgba(15,23,42,0.2)]">
+        <button className="rounded-lg shadow-lg cursor-pointer" onClick={handleGenerate}>
           Generate Images
         </button>
         <img src={assets.star_group} width={30} alt="" />

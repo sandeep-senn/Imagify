@@ -45,10 +45,10 @@ const Header = () => {
       <motion.h1
         custom={0.2}
         variants={fadeUp}
-        className="text-4xl max-w-[300px] sm:text-7xl sm:max-w-[590px] mx-auto mt-7 text-center"
+        className="text-4xl max-w-xl sm:text-7xl sm:max-w-3xl mx-auto mt-7 text-center"
       >
-        Turn text to <br />
-        <span className="text-blue-600">Image</span>, in seconds
+        Turn text to
+        <span className="text-blue-600"> Image</span>,<br /> in seconds
       </motion.h1>
 
       {/* Sub text */}
